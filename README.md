@@ -1,122 +1,287 @@
 # Agentic RAG Execo
 
-An intelligent document extraction system using Retrieval-Augmented Generation (RAG) with agentic workflows to extract structured data from PDF documents, particularly financial agreements like Stock Purchase Agreements (SPAs).
+An intelligent **document information extraction system** built using **Retrieval-Augmented Generation (RAG)** with **agentic workflows** to extract structured data from PDF documents, especially financial and legal agreements such as **Stock Purchase Agreements (SPAs)**.
+
+The system combines **PDF parsing, semantic retrieval, vector search, and agent-driven reasoning** to convert unstructured agreements into structured JSON output.
+
+---
+
+## Problem Statement
+
+Financial and legal agreements often contain critical business information embedded inside long unstructured PDF documents.
+
+Manual extraction of these fields is:
+
+* time-consuming
+* error-prone
+* difficult to scale
+
+This project solves the problem using an **Agentic RAG pipeline** that intelligently retrieves relevant document chunks and extracts structured key fields using an LLM-powered workflow.
+
+---
 
 ## Features
 
-- **PDF Text Extraction**: Loads and processes text from PDF documents
-- **Intelligent Chunking**: Splits documents into meaningful chunks with overlap for better context
-- **Vector Store Integration**: Uses ChromaDB for efficient similarity search
-- **Agentic Extraction**: Employs LangGraph-based agents for structured data extraction
-- **Ollama Integration**: Leverages local LLMs via Ollama for processing
-- **Configurable Fields**: Extracts predefined financial agreement fields
-- **Fallback Mechanisms**: Includes regex-based fallbacks for critical fields
+* **PDF Text Extraction** – Reads and processes text from PDF documents
+* **Intelligent Chunking** – Splits documents into contextual chunks with overlap
+* **Vector Store Integration** – Uses ChromaDB for semantic similarity search
+* **Agentic Workflow** – Uses LangGraph based agent nodes for extraction logic
+* **LLM Integration** – Supports local inference via Ollama
+* **Configurable Field Extraction** – Extracts predefined financial fields
+* **Fallback Mechanism** – Regex-based fallback extraction for critical fields
+* **Structured JSON Output** – Saves extracted results in JSON format
+* **Modular Code Design** – Clean and scalable project structure
+
+---
+
+## Architecture Flow
+
+PDF Document
+↓
+Text Extraction
+↓
+Chunking + Overlap
+↓
+Embedding Generation
+↓
+Vector Store (Chroma)
+↓
+Retriever
+↓
+LangGraph Agent Workflow
+↓
+Structured JSON Output
+
+---
+
+## Tech Stack
+
+* Python
+* LangGraph
+* LangChain
+* Ollama
+* Chroma
+* HuggingFace Embeddings
+* PyPDF
+* Sentence Transformers
+
+---
 
 ## Installation
 
 ### Prerequisites
 
-- Python 
-- Ollama installed and running with `llama3.1:8b` model
+* Python 3.10+
+* Ollama installed and running
+* `llama3.1:8b` model downloaded
 
-### Setup
+---
 
-1. Clone the repository:
-   
-   git clone <repository-url>
-   cd agentic_rag_execo
-   
+## Setup
 
-2. Create a virtual environment:
-   
-   Command -- python -m venv venv
-   activate -- venv\Scripts\activate
-   
-   
+### 1. Clone repository
 
-3. Install dependencies:
-   
-   Command -- pip install -r requirements.txt
+```
+git clone https://github.com/swapnil-35/agentic_rag_execo.git
+cd agentic_rag_execo
+```
 
+---
 
-4. Ensure Ollama is running:
-   
-   ollama serve
-   ollama pull llama3.1:8b
+### 2. Create virtual environment
 
+```
+python -m venv venv
+```
+
+Activate environment:
+```
+venv\Scripts\activate
+```
+
+---
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### 4. Start Ollama
+
+```
+ollama serve
+ollama pull llama3.1:8b
+```
+
+---
 
 ## Usage
 
-1. Place your PDF document in the `data/` directory and update `config.py` with the correct path.
+### 1. Place PDF inside `data/`
 
-2. Run the main script:
-   
-   python main.py
-   
+Example:
 
-3. The extracted data will be saved to `output/extracted.json`.
+```text
+data/POC_TEST_SPA.pdf
+```
+
+---
+
+### 2. Update config
+
+Modify `config.py`:
+
+```python
+PDF_PATH = "data/POC_TEST_SPA.pdf"
+```
+
+---
+
+### 3. Run project
+
+```
+python main.py
+```
+
+---
+
+### 4. Output
+
+The extracted fields will be saved to:
+
+```text
+output/extracted.json
+```
+
+---
+
+## Sample Output
+
+```json
+{
+  "Document Type": "Share Purchase Agreement",
+  "Effective Date": "May 22, 2018",
+  "Buyer": "Virgil AcquisitionCo Inc.",
+  "Company (Target)": "OnTargetJobs Canada",
+  "Seller": "Not Found",
+  "Cash Purchase Price": "$120,000,000",
+  "Governing Law": "New York"
+}
+```
+
+---
 
 ## Configuration
 
-Edit `config.py` to customize:
+Update `config.py` to customize:
 
-- `PDF_PATH`: Path to the input PDF file
-- `VECTOR_STORE_PATH`: Directory for ChromaDB storage
-- `OLLAMA_MODEL`: Ollama model to use
-- `CHUNK_SIZE`: Size of text chunks
-- `CHUNK_OVERLAP`: Overlap between chunks
-- `TOP_K`: Number of similar chunks to retrieve
+* `PDF_PATH` – input PDF path
+* `VECTOR_STORE_PATH` – ChromaDB storage location
+* `OLLAMA_MODEL` – LLM model
+* `CHUNK_SIZE` – chunk length
+* `CHUNK_OVERLAP` – overlap size
+* `TOP_K` – retrieved chunks count
+
+---
 
 ## Project Structure
 
-```
+```text
 agentic_rag_execo/
-├── config.py                 # Configuration settings
-├── main.py                   # Main execution script
-├── requirements.txt          # Python dependencies
-├── README.md                 # This file
+│
+├── config.py
+├── main.py
+├── requirements.txt
+├── README.md
+├── .gitignore
+│
 ├── data/
-│   ├── POC_TEST_SPA.pdf      # Sample PDF document
-│   └── chroma_db/            # Vector store database
+│   ├── POC_TEST_SPA.pdf
+│   └── chroma_db/
+│
 ├── output/
-│   └── extracted.json        # Extracted data output
+│   └── extracted.json
+│
 └── src/
     ├── __init__.py
-    ├── chunker.py            # Document chunking logic
-    ├── document_loader.py    # PDF text extraction
-    ├── extractor_agent.py    # LangGraph agent for extraction
-    ├── prompts.py            # LLM prompts
-    ├── utils.py              # Utility functions
-    └── vector_store.py       # ChromaDB integration
+    ├── chunker.py
+    ├── document_loader.py
+    ├── extractor_agent.py
+    ├── prompts.py
+    ├── utils.py
+    └── vector_store.py
 ```
+
+---
 
 ## Dependencies
 
-- `langgraph`: For building agentic workflows
-- `langchain`: Core LLM framework
-- `langchain-ollama`: Ollama integration
-- `langchain-huggingface`: HuggingFace embeddings
-- `sentence-transformers`: Text embeddings
-- `pypdf`: PDF text extraction
-- `chromadb`: Vector database
-- `tiktoken`: Token counting
-- `python-dotenv`: Environment variable management
+Main libraries used:
+
+* `langgraph`
+* `langchain`
+* `langchain-ollama`
+* `langchain-huggingface`
+* `sentence-transformers`
+* `pypdf`
+* `chromadb`
+* `tiktoken`
+* `python-dotenv`
+
+Install all dependencies using:
+
+```
+pip install -r requirements.txt
+```
+
+---
 
 ## Extracted Fields
 
-The system extracts the following fields from financial documents:
+The system extracts the following fields:
 
-- Document Type
-- Effective Date
-- Buyer
-- Company (Target)
-- Seller
-- Shares Transacted
-- Cash Purchase Price
-- Escrow Agent
-- Escrow Amount
-- Target Working Capital
-- Indemnification De Minimis Amount
-- Indemnification Basket Amount
-- Indemnification Cap Amount
-- Governing Law
+* Document Type
+* Effective Date
+* Buyer
+* Company (Target)
+* Seller
+* Shares Transacted
+* Cash Purchase Price
+* Escrow Agent
+* Escrow Amount
+* Target Working Capital
+* Indemnification De Minimis Amount
+* Indemnification Basket Amount
+* Indemnification Cap Amount
+* Governing Law
+
+---
+
+## Future Improvements
+
+* Multi-document retrieval
+* Better agent orchestration
+* Confidence score for extracted fields
+* Human review workflow
+* FastAPI deployment
+* Docker support
+* Cloud deployment on AWS / Render
+
+---
+
+## Use Cases
+
+* Legal document extraction
+* Financial agreement parsing
+* Due diligence automation
+* Contract intelligence
+* Enterprise document workflows
+
+---
+
+## Author
+
+Developed as an **Agentic RAG assignment project** with modular architecture and production-style workflow design.
