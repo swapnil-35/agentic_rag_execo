@@ -1,0 +1,14 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+.env
+.ipynb_checkpoints/
+chroma_db/
+*.db
+*.sqlite3
+artifacts/
+models/
